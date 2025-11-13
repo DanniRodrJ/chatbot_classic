@@ -1,0 +1,4 @@
+nltk==3.9.2
+pip==23.2.1
+streamlit==1.51.0
+tensorflow==2.20.0
