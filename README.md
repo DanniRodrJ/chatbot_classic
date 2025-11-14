@@ -1,98 +1,189 @@
-# Chatbot Clásico con Red Neuronal (MLP + BoW)
+# Classic Intent Classifier: BoW + MLP (Non-LLM NLU)
 
-> Un **chatbot pre-LLM** con:
->
-> - Bolsa de palabras + lematización
-> - Red neuronal **MLP** (3 capas)
-> - 11 intenciones reales
-> - Contexto simple (última intención)
-> - Interfaz con Streamlit
+A fully controllable, explainable intent classification system using Bag of Words and a Multilayer Perceptron.
 
 ---
 
-## Demo
+## 🚀 ```Demo```
 
 ![Demo](demo.gif)
 
 ---
 
-## Tecnologías
+## ⚙️ ```Tech Stack```
 
-- **Python**
-- **TensorFlow / Keras** → Red Neuronal MLP
-- **NLTK** → Lematización, WordNet, sinónimos
-- **Streamlit** → Interfaz estilo Grok
-- **BoW (Bag of Words)** → Representación de texto
+| Technology | Purpose |
+|----------|--------|
+| **Python** | Core language |
+| **TensorFlow / Keras** | MLP model training & inference |
+| **NLTK** | Tokenization, lemmatization, synonym expansion |
+| **Streamlit** | Production-ready local UI |
+| **BoW** | Text-to-vector encoding |
 
 ---
 
-## Arquitectura del Proyecto
+## 🔬 ```Technical Overview```
+
+| Component | Implementation |
+|---------|----------------|
+| **Model** | MLP (128 → 64 → N) with Dropout |
+| **Feature Engineering** | BoW + lemmatization + WordNet synonyms |
+| **Preprocessing** | NLTK (tokenization, lemmatization) |
+| **Context** | Previous intent state (`last_intent`) |
+| **Entity Extraction** | Regex + contextual integration |
+| **Framework** | TensorFlow/Keras |
+| **Interface** | Streamlit (local deployment) |
+| **Architecture** | Modular (`src/`, `data/`, `models/`) |
+
+## 📁 ```Project Structure```
 
 ```bash
 chatbot_classic/
-│
 ├── src/
-│   ├── init.py
-│   ├── config.py        
-│   ├── model.py          ← Entrenamiento
-│   ├── chatbot.py        ← Inferencia
-│   └── utils.py          ← Preprocesamiento
+│   ├── __init__.py
+│   ├── config.py         # Path management
+│   ├── model.py          # Training pipeline
+│   ├── chatbot.py        # Inference engine
+│   └── utils.py          # Preprocessing + NLTK auto-download
 │
 ├── data/
 │   └── documentacion.json
 │
-├── app.py                ← Streamlit
-├── training_chatbot.py   ← Entrada para entrenar
+├── models/               # Generated artifacts
+│   ├── .gitkeep
+│   ├── chatbot_model.keras
+│   ├── words.pkl
+│   └── classes.pkl
+│
+├── app.py                # Streamlit frontend
+├── training_chatbot.py   # Training entrypoint
 ├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
-## Comparativa: Clásico vs LLM
-
-| Característica       | Este Chatbot (MLP)         | LLM (Grok, GPT)               |
-|----------------------|----------------------------|-------------------------------|
-| **Red Neuronal**     | MLP (128 → 64 → N)         | Transformer (175B parámetros)  |
-| **Contexto**         | 1 frase                    | 128k tokens                   |
-| **Entrenamiento**    | 200 épocas, <1MB           | Billones de tokens            |
-| **Flexibilidad**     | Baja (intenciones fijas)   | Alta (responde cualquier cosa)|
-| **Costo**            | $0                         | $$$$$                         |
-| **Explicabilidad**   | 100%                       | 0%                            |
-
----
-
-## Limitaciones del Modelo (Transparencia Técnica)
-
-| Limitación | Descripción | Impacto |
-|-----------|-------------|--------|
-| **Sin contexto real** | Solo analiza 1 frase a la vez | No recuerda el flujo |
-| **Clasificación rígida** | Solo responde a intenciones predefinidas | Falla con variaciones |
-| **BoW pierde orden** | `"no quiero"` = `"quiero no"` | Errores semánticos |
-| **Sin aprendizaje en tiempo real** | Requiere reentrenar | No se adapta |
-| **No entiende entidades complejas** | Números, fechas, nombres | Necesita regex |
-
-> **Este no es un bug, es una característica**:  
-> _"Muestra exactamente cómo funcionaban los chatbots antes de los LLMs"_
-
----
-
-## Evolución del Proyecto (Visita mis repos)
-
-| Nivel | Proyecto | Tecnología | Enlace |
-|------|---------|-----------|-------|
-| 1 | **Clásico** | MLP + BoW | `este-repo` |
-| 2 | **Embeddings** | Word2Vec + LSTM | [chatbot-word2vec](https://github.com/tuusuario/chatbot-word2vec) |
-| 3 | **Transformers** | BERT + Fine-tuning | [chatbot-bert](https://github.com/tuusuario/chatbot-bert) |
-| 4 | **LLM** | Llama 3 / Grok API | [chatbot-llm](https://github.com/tuusuario/chatbot-llm) |
-
-> **LLMs entran en el nivel 4** → cuando usas modelos preentrenados con **billones de parámetros**.
-
----
-
-## Instalación
+## ⬇️ ```Inference Pipeline```dotnetcli
 
 ```bash
+Input: "I want to return a damaged item"
+        ↓
+Tokenization → Lemmatization → Synonym Expansion
+        ↓
+Bag of Words → [0, 1, 0, 1, ...] (binary vector)
+        ↓
+MLP → [0.02, 0.91, 0.01, ...] → intent: "devolucion"
+        ↓
+Context: last_intent = "devolucion"
+        ↓
+Regex: extract order number if present
+        ↓
+Output: "Sorry to hear that. Can you provide the order number?"
+```
+
+## 🧠 ```Neural Network Architecture```
+
+```python
+Sequential([
+    Input(shape=(vocab_size,)),
+    Dense(128, activation='relu'),
+    Dropout(0.5),
+    Dense(64, activation='relu'),
+    Dropout(0.5),
+    Dense(n_classes, activation='softmax')
+])
+```
+
+- **Optimizer**: SGD with exponential decay
+- **Loss**: categorical_crossentropy
+- **Training**: 200 epochs, batch size 5
+
+---
+
+## ⭐ ```Key Features```
+
+|Feature|Description|
+|-------|-----------|
+|**Intent Classification**|11 predefined intents|
+|**Simple Context** | Uses last_intent for conversational flow|
+|**Response Deduplication**|Filters repeated responses|
+|**Entity Detection**|Order numbers via regex|
+|**Synonym Augmentation**|Automatic pattern expansion via WordNet|
+|**Robust Fallback**|Regex + previous intent if confidence < 0.5|
+
+## ⚠️ ```Known Limitations```
+
+| Limitation                  | Mitigation                            | Impact |
+|----------------------------|----------------------------------------|--------|
+| **No sequence modeling**     | Accepted (BoW design)                  | "I don't want" may be treated like "I want" |
+| **Static vocabulary**    | Retrain to expand               | No runtime adaptation to new terms |
+| **No long-term memory** | `last_intent as minimal state     | Flows >2 steps lose context |
+| **Limited entity support**     | Regex + manual patterns               | Only detects predefined formats |
+
+> **These are inherent to the classic design and fully controlled**
+
+---
+
+## 📈 ```Project Evolution```
+
+| Level | Focus | Repository |
+|------|---------|-----------|
+| 1 | **Clásico** | `chatbot_classic` |
+| 2 | **Embeddings + Sequence** | [chatbot-word2vec](https://github.com/tuusuario/chatbot-word2vec) |
+| 3 | **Transformers** | [chatbot-bert](https://github.com/tuusuario/chatbot-bert) |
+| 4 | **LLM Integration** | [chatbot-llm](https://github.com/tuusuario/chatbot-llm) |
+
+---
+
+## 💻 ```Setup & Run```
+
+### Prerequisites
+
+```bash
+git clone https://github.com/DanniRodrJ/chatbot_classic.git
+cd chatbot_classic
 pip install -r requirements.txt
-python -c "import nltk; nltk.download('punkt_tab'); nltk.download('wordnet')"
 python training_chatbot.py
 streamlit run app.py
 ```
+
+> **NLTK** data is automatically downloaded on first import.
+
+## 🔄 ```Retraining```
+
+```bash
+# Edit data/documentacion.json
+python training_chatbot.py  # Overwrites models/
+...
+913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7361 - loss: 0.5940  
+Epoch 194/200
+913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7416 - loss: 0.5875  
+Epoch 195/200
+913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7326 - loss: 0.5919  
+Epoch 196/200
+913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7400 - loss: 0.5924  
+Epoch 197/200
+913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7448 - loss: 0.5758  
+Epoch 198/200
+913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7337 - loss: 0.5844  
+Epoch 199/200
+913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7324 - loss: 0.5892  
+Epoch 200/200
+913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7372 - loss: 0.5880  
+Modelo entrenado y guardado.
+```
+
+## 👩‍💻 ```Developer```
+
+If you would like to contact me, simply click on my name and you will be redirected to my LinkedIn profile. I would be delighted 🤗 to answer your questions and share more details about my skills and experience.
+
+<div align="center">
+
+*AI Engineer*
+| [<img src="https://avatars.githubusercontent.com/u/123108361?v=4" width=115><br><sub>Danniela Rodríguez</sub>](https://www.linkedin.com/in/danniela-rodriguez-jove-/)
+| :---: |
+
+<div align="left">
+
+## 🙌 ```Acknowledgements and Updates```
+
+*Thank you for reviewing this project* 🤗! *If you would like to stay informed about future updates, please star the repository* ⭐. *You can find the option to do so at the top right of the page. Your support is greatly appreciated.*

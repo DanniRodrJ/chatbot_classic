@@ -1,18 +1,17 @@
+from src.chatbot import Chatbot
+from src.utils.utils import extract_order_number
 import streamlit as st
-from chatbot import predict_class, get_response, intents
 
-# Configuración de Página
-st.set_page_config("Asistente Virtual", layout='wide', page_icon="robot")
+st.set_page_config("Classic Intent Classifier", layout='wide', page_icon="robot")
 
 st.markdown("""
 <style>
-    /* Fondo oscuro */
+
     .stApp {
         background: #0f0f0f;
         color: #e0e0e0;
     }
 
-    /* Título centrado */
     .main-title {
         text-align: center;
         color: #f7fafc;
@@ -27,7 +26,6 @@ st.markdown("""
         margin-bottom: 30px;
     }
 
-    /* Mensajes del usuario */
     [data-testid="stChatMessageUser"] {
         background: #2d3748 !important;
         color: #e2e8f0 !important;
@@ -40,7 +38,6 @@ st.markdown("""
         font-size: 15px;
     }
 
-    /* Mensajes del asistente */
     [data-testid="stChatMessageAssistant"] {
         background: #2f855a !important;
         color: white !important;
@@ -61,7 +58,6 @@ st.markdown("""
         font-size: 18px;
     }
 
-    /* Input centrado y compacto */
     .stChatInput {
         max-width: 700px !important;
         margin: 0 auto !important;
@@ -76,10 +72,8 @@ st.markdown("""
         font-size: 15px;
     }
 
-    /* Ocultar header y footer */
     .stHeader, .stFooter { display: none !important; }
 
-    /* Centrar todo el contenido */
     .block-container {
         max-width: 700px !important;
         padding-top: 1rem !important;
@@ -88,53 +82,46 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='main-title'>Asistente Virtual</h1>", unsafe_allow_html=True)
-st.markdown("<p class='subtitle'>Chatbot clásico • Red Neuronal • Pre-LLM</p>", unsafe_allow_html=True)
+st.markdown("<h1 class='main-title'>Classic Intent Classifier</h1>", unsafe_allow_html=True)
+st.markdown("<p class='subtitle'>BoW + MLP • Non-LLM NLU • Full Control</p>", unsafe_allow_html=True)
+
+chatbot = Chatbot()
 
 if "messages" not in st.session_state: st.session_state.messages = []
 if "first_message" not in st.session_state: st.session_state.first_message = True
 if "last_intent" not in st.session_state: st.session_state.last_intent = None
     
-# Mostrar el historico de los mensajes
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         
-# Mensaje inicial
 if st.session_state.first_message:
     with st.chat_message("assistant"):
-        st.markdown("Hola, ¿Cómo puedo ayudarte?")
+        st.markdown("Hello! How can I assist you today?")
         
-    st.session_state.messages.append({"role": "assistant", "content": "Hola, ¿Cómo puedo ayudarte?"})
+    st.session_state.messages.append({"role": "assistant", "content": "Hello! How can I assist you today?"})
     st.session_state.first_message = False
     
-# Creacion del promt
-if prompt := st.chat_input("Escribe tu mensaje..."):
+if prompt := st.chat_input("Type your message..."):
     
     with st.chat_message("user"):
         st.markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
     
-    # Última respuesta (para evitar repetición)
     last_response = st.session_state.messages[-2]["content"] if len(st.session_state.messages) >= 2 and st.session_state.messages[-2]["role"] == "assistant" else None
     
-    # Implementacion del algoritmo de IA
-    insts = predict_class(prompt, st.session_state.last_intent)
-    res = get_response(insts, intents, st.session_state.last_intent, last_response)
+    insts = chatbot.predict_intent(prompt, st.session_state.last_intent)
+    res = chatbot.get_response(insts, last_response)
     
     
-    if insts[0]['intent'] == 'numero_pedido' and st.session_state.last_intent == 'devolucion':
-        # Extraer número con regex
-        match = re.search(r'\b\d{5,}\b', prompt)
-        order_num = match.group(0) if match else prompt.strip()
-        res = res.format(order_num)
-    
+    if insts[0]['intent'] == 'order_number' and st.session_state.last_intent == 'return':
+        num = extract_order_number(prompt) or prompt.strip()
+        res = res.format(num)
     
     with st.chat_message("assistant"):
         st.markdown(res)
     st.session_state.messages.append({"role": "assistant", "content": res})
     
-    # Guardar intención
-    if insts and insts[0]['intent'] != 'no_entendido':
+    if insts and insts[0]['intent'] != 'not_understood':
         st.session_state.last_intent = insts[0]['intent']
         

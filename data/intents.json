@@ -1,0 +1,152 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hello", "hi", "hey", "good morning", "good afternoon", "good evening",
+        "how are you", "what's up", "greetings"
+      ],
+      "responses": [
+        "Hello! How can I assist you today?",
+        "Hi! Welcome, how can I help?",
+        "Hey! What do you need?"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye", "goodbye", "see you later", "talk to you soon", "farewell",
+        "thanks and goodbye", "I'm leaving", "see you"
+      ],
+      "responses": [
+        "Goodbye! Have a great day.",
+        "See you later! I'm here if you need me.",
+        "Bye! Come back soon."
+      ]
+    },
+    {
+      "tag": "return",
+      "patterns": [
+        "I want to return a product",
+        "need to make a return",
+        "how do I return an item",
+        "it arrived damaged",
+        "the product is defective",
+        "it doesn't work",
+        "it's broken",
+        "I want a refund",
+        "I don't like it, I want to return it",
+        "exchange product",
+        "arrived in poor condition",
+        "not what I ordered"
+      ],
+      "responses": [
+        "I'm sorry for the inconvenience. Can you provide more details about the issue?",
+        "Understood. Did it arrive damaged or is it not working?"
+      ]
+    },
+    {
+      "tag": "track_order",
+      "patterns": [
+        "where is my order",
+        "track shipment",
+        "tracking number",
+        "when will my package arrive",
+        "order status",
+        "my order hasn't arrived",
+        "tracking"
+      ],
+      "responses": [
+        "To track your order, please provide the order number.",
+        "Give me the tracking number and I'll help you check it."
+      ]
+    },
+    {
+      "tag": "payment",
+      "patterns": [
+        "how do I pay",
+        "payment methods",
+        "can I pay with card",
+        "do you accept PayPal",
+        "cash on delivery",
+        "how does payment work"
+      ],
+      "responses": [
+        "We accept credit/debit cards, PayPal, and bank transfers.",
+        "You can pay with any card or PayPal at checkout."
+      ]
+    },
+    {
+      "tag": "tech_support",
+      "patterns": [
+        "my device won't turn on",
+        "button not working",
+        "it shuts down by itself",
+        "I have a technical issue",
+        "need help with the device"
+      ],
+      "responses": [
+        "Sorry for the issue. Can you tell me the model and what's happening?",
+        "Let's fix it. What symptoms is the product showing?"
+      ]
+    },
+    {
+      "tag": "hours",
+      "patterns": [
+        "what time do you open",
+        "what are your hours",
+        "until what time are you open",
+        "open on Sundays"
+      ],
+      "responses": [
+        "We are open Monday to Friday from 9:00 AM to 6:00 PM, and Saturday from 10:00 AM to 2:00 PM.",
+        "Our hours are 9 AM to 6 PM, Monday to Friday."
+      ]
+    },
+    {
+      "tag": "shipping",
+      "patterns": [
+        "how long does shipping take",
+        "do you ship to other provinces",
+        "shipping cost",
+        "free shipping"
+      ],
+      "responses": [
+        "Shipping takes 2 to 5 business days depending on the region.",
+        "Yes, we ship nationwide. Cost depends on weight and destination."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "thank you", "thanks", "thank you for helping",
+        "I appreciate it", "ok thanks"
+      ],
+      "responses": [
+        "You're welcome! I'm here to help.",
+        "Glad to assist! Let me know if you need anything else."
+      ]
+    },
+    {
+      "tag": "not_understood",
+      "patterns": [],
+      "responses": [
+        "I'm sorry, I didn't understand. Could you rephrase?",
+        "I'm not sure how to help. Can you provide more details?"
+      ]
+    },
+    {
+      "tag": "order_number",
+      "patterns": [
+        "my order is",
+        "the order is",
+        "it's",
+        "12345", "98765", "ABC123", "ORDER"
+      ],
+      "responses": [
+        "Perfect! With order #{} I'll process your return shortly.",
+        "Thanks. Order #{} will be reviewed and we'll contact you within 24 hours."
+      ]
+    }
+  ]
+}
