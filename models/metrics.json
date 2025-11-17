@@ -1,0 +1,11 @@
+{
+  "best_epoch": 16,
+  "final_epoch": 31,
+  "best_val_accuracy": 0.5062050819396973,
+  "best_val_loss": 1.4570436477661133,
+  "train_samples": 6122,
+  "test_samples": 1531,
+  "total_patterns": 13,
+  "total_intents": 13,
+  "notes": "BoW + MLP + synonym augmentation + early stopping"
+}
