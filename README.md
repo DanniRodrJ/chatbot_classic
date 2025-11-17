@@ -1,14 +1,12 @@
 # Classic Intent Classifier: BoW + MLP (Non-LLM NLU)
 
-A fully controllable, explainable intent classification system using Bag of Words and a Multilayer Perceptron.
+![image](/assets/image.png)
 
----
+A fully controllable, explainable intent classification system using **Bag of Words (BoW)** and a **Multilayer Perceptron (MLP)**.This system is optimized for customer service centers with a fixed set of intents, providing a **low-cost**, highly transparent solution.
 
 ## 🚀 ```Demo```
 
-![Demo](demo.gif)
-
----
+![Demo](/assets/demo.gif)
 
 ## ⚙️ ```Tech Stack```
 
@@ -20,8 +18,6 @@ A fully controllable, explainable intent classification system using Bag of Word
 | **Streamlit** | Production-ready local UI |
 | **BoW** | Text-to-vector encoding |
 
----
-
 ## 🔬 ```Technical Overview```
 
 | Component | Implementation |
@@ -30,7 +26,7 @@ A fully controllable, explainable intent classification system using Bag of Word
 | **Feature Engineering** | BoW + lemmatization + WordNet synonyms |
 | **Preprocessing** | NLTK (tokenization, lemmatization) |
 | **Context** | Previous intent state (`last_intent`) |
-| **Entity Extraction** | Regex + contextual integration |
+| **Entity Extraction** | **Regex + Slot Filling** |
 | **Framework** | TensorFlow/Keras |
 | **Interface** | Streamlit (local deployment) |
 | **Architecture** | Modular (`src/`, `data/`, `models/`) |
@@ -62,20 +58,22 @@ chatbot_classic/
 └── README.md
 ```
 
-## ⬇️ ```Inference Pipeline```dotnetcli
+## ⬇️ ```Inference Pipeline```
+
+The inference engine processes the input to determine intent and fill in key slots, such as order numbers.
 
 ```bash
 Input: "I want to return a damaged item"
         ↓
 Tokenization → Lemmatization → Synonym Expansion
         ↓
-Bag of Words → [0, 1, 0, 1, ...] (binary vector)
+Bag of Words (compare with original words and expanded synonyms) → [0, 1, 0, 1, ...] (binary vector)
         ↓
-MLP → [0.02, 0.91, 0.01, ...] → intent: "devolucion"
+MLP → [0.02, 0.91, 0.01, ...] → intent: "return"
         ↓
-Context: last_intent = "devolucion"
-        ↓
-Regex: extract order number if present
+Context & Entity Check: last_intent = "return"
+- last_intent = "return"
+- Regex: extract the order number if present (Slot Filling)
         ↓
 Output: "Sorry to hear that. Can you provide the order number?"
 ```
@@ -97,18 +95,24 @@ Sequential([
 - **Loss**: categorical_crossentropy
 - **Training**: 200 epochs, batch size 5
 
----
-
 ## ⭐ ```Key Features```
 
 |Feature|Description|
 |-------|-----------|
 |**Intent Classification**|11 predefined intents|
 |**Simple Context** | Uses last_intent for conversational flow|
+|**Slot Filling (Enhanced)**|Order numbers extracted via regex and used to format the response|
 |**Response Deduplication**|Filters repeated responses|
-|**Entity Detection**|Order numbers via regex|
 |**Synonym Augmentation**|Automatic pattern expansion via WordNet|
 |**Robust Fallback**|Regex + previous intent if confidence < 0.5|
+
+## 📈 ```Training Metrics```
+The model is trained for 200 epochs. The following is the accuracy achieved at the end of the process, demonstrating the model's ability to learn from intention patterns.
+
+|Metrics|Final Value ( Epoch 200)|
+|-------|------|
+|**Accuracy**|~0.74 (74%)|
+|**Loss**|~0.59|
 
 ## ⚠️ ```Known Limitations```
 
@@ -121,9 +125,7 @@ Sequential([
 
 > **These are inherent to the classic design and fully controlled**
 
----
-
-## 📈 ```Project Evolution```
+## ⏭️ ```Project Evolution```
 
 | Level | Focus | Repository |
 |------|---------|-----------|
@@ -131,8 +133,6 @@ Sequential([
 | 2 | **Embeddings + Sequence** | [chatbot-word2vec](https://github.com/tuusuario/chatbot-word2vec) |
 | 3 | **Transformers** | [chatbot-bert](https://github.com/tuusuario/chatbot-bert) |
 | 4 | **LLM Integration** | [chatbot-llm](https://github.com/tuusuario/chatbot-llm) |
-
----
 
 ## 💻 ```Setup & Run```
 
@@ -169,7 +169,7 @@ Epoch 199/200
 913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7324 - loss: 0.5892  
 Epoch 200/200
 913/913 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7372 - loss: 0.5880  
-Modelo entrenado y guardado.
+Model trained and saved.
 ```
 
 ## 👩‍💻 ```Developer```

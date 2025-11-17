@@ -1,4 +1,3 @@
-# src/model.py
 import nltk
 import json
 import pickle
@@ -9,7 +8,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Input
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.optimizers.schedules import ExponentialDecay
-from src.utils.utils import clean_sentence, get_synonyms
+from src.utils.utils import clean_sentence, get_synonyms, ensure_nltk_data
 from src.config import MODEL_DIR, DATA_PATH, MODEL_PATH, WORDS_PATH, CLASSES_PATH
 
 class ChatbotTrainer:
@@ -67,6 +66,7 @@ class ChatbotTrainer:
         return model
 
     def train(self):
+        ensure_nltk_data()
         self.load_data()
         self.preprocess()
         X, y = self.create_training_data()
@@ -76,4 +76,4 @@ class ChatbotTrainer:
         model.save(MODEL_PATH)
         with open(WORDS_PATH, 'wb') as f: pickle.dump(self.words, f)
         with open(CLASSES_PATH, 'wb') as f: pickle.dump(self.classes, f)
-        print("Modelo entrenado y guardado.")
+        print("Model trained and saved.")

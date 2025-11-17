@@ -1,4 +1,3 @@
-# src/chatbot.py
 import pickle
 import json
 import numpy as np
@@ -32,17 +31,24 @@ class Chatbot:
 
         return [{'intent': self.classes[r[0]], 'probability': str(r[1])} for r in results]
 
-    def get_response(self, intents_list, last_response=None):
+    def get_response(self, intents_list, last_response=None, order_number=None):
         if not intents_list:
             return "I'm sorry, I didn't understand. Could you rephrase?"
         tag = intents_list[0]['intent']
         for intent in self.intents['intents']:
             if intent['tag'] == tag:
                 responses = intent['responses']
-                if last_response and len(responses) > 1:
-                    filtered = [r for r in responses if r != last_response]
-                    return random.choice(filtered or responses)
-                return random.choice(responses)
+                formatted_responses = []
+                for r in responses:
+                    if '{}' in r and tag == 'order_number' and order_number:
+                        formatted_responses.append(r.format(order_number))
+                    else:
+                        formatted_responses.append(r)
+                responses_to_use = formatted_responses
+                if last_response and len(responses_to_use) > 1:
+                    filtered = [r for r in responses_to_use if r != last_response]
+                    return random.choice(filtered or responses_to_use)
+                return random.choice(responses_to_use)
         return "I don't have a response for that."
 
     def _bag_of_words(self, sentence):

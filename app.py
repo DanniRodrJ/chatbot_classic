@@ -111,12 +111,12 @@ if prompt := st.chat_input("Type your message..."):
     last_response = st.session_state.messages[-2]["content"] if len(st.session_state.messages) >= 2 and st.session_state.messages[-2]["role"] == "assistant" else None
     
     insts = chatbot.predict_intent(prompt, st.session_state.last_intent)
-    res = chatbot.get_response(insts, last_response)
+    order_num_slot = None
     
+    if insts[0]['intent'] == 'order_number' or (last_response and 'order number' in last_response.lower()):
+        order_num_slot = extract_order_number(prompt) or prompt.strip()
     
-    if insts[0]['intent'] == 'order_number' and st.session_state.last_intent == 'return':
-        num = extract_order_number(prompt) or prompt.strip()
-        res = res.format(num)
+    res = chatbot.get_response(insts, last_response,order_number=order_num_slot)
     
     with st.chat_message("assistant"):
         st.markdown(res)
