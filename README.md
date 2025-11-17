@@ -35,27 +35,29 @@ A fully controllable, explainable intent classification system using **Bag of Wo
 
 ```bash
 chatbot_classic/
+├── assets/
+│
+├── data/
+│   └── intents.json
+│
+├── models/               # Generated artifacts
+│   ├── chatbot_model.keras
+│   ├── words.pkl
+│   └── classes.pkl
+│
 ├── src/
 │   ├── __init__.py
 │   ├── config.py         # Path management
 │   ├── model.py          # Training pipeline
 │   ├── chatbot.py        # Inference engine
-│   └── utils.py          # Preprocessing + NLTK auto-download
+│   └── utils/
+│       └── utils.py      # Preprocessing + NLTK auto-download
 │
-├── data/
-│   └── documentacion.json
-│
-├── models/               # Generated artifacts
-│   ├── .gitkeep
-│   ├── chatbot_model.keras
-│   ├── words.pkl
-│   └── classes.pkl
-│
-├── app.py                # Streamlit frontend
-├── training_chatbot.py   # Training entrypoint
-├── requirements.txt
 ├── .gitignore
-└── README.md
+├── app.py                # Streamlit frontend
+├── README.md   
+├── requirements.txt
+└── training_chatbot.py   # Training entrypoint
 ```
 
 ## ⬇️ ```Inference Pipeline```
