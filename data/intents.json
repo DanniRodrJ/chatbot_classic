@@ -4,7 +4,8 @@
       "tag": "greeting",
       "patterns": [
         "hello", "hi", "hey", "good morning", "good afternoon", "good evening",
-        "how are you", "what's up", "greetings"
+        "how are you", "what's up", "hola", "hey there", "hi there", "hello there",
+        "sup", "yo", "howdy", "greetings", "heya", "hi bot", "hey bot"
       ],
       "responses": [
         "Hello! How can I assist you today?",
@@ -15,8 +16,9 @@
     {
       "tag": "goodbye",
       "patterns": [
-        "bye", "goodbye", "see you later", "talk to you soon", "farewell",
-        "thanks and goodbye", "I'm leaving", "see you"
+        "bye", "goodbye", "see you later", "talk to you soon", "farewell", "bye bye",
+        "thanks and goodbye", "I'm leaving", "see you", "catch you later", "later",
+        "gotta go", "peace out", "adios", "cya", "ttyl", "have a good one"
       ],
       "responses": [
         "Goodbye! Have a great day.",
@@ -25,106 +27,118 @@
       ]
     },
     {
-      "tag": "return",
+      "tag": "thanks",
       "patterns": [
-        "I want to return a product",
-        "need to make a return",
-        "how do I return an item",
-        "it arrived damaged",
-        "the product is defective",
-        "it doesn't work",
-        "it's broken",
-        "I want a refund",
-        "I don't like it, I want to return it",
-        "exchange product",
-        "arrived in poor condition",
-        "not what I ordered"
+        "thank you", "thanks", "thank you very much", "thanks a lot", "appreciate it",
+        "thx", "ty", "thank u", "thanks bro", "gracias", "perfect thanks", "ok thanks"
       ],
       "responses": [
-        "I'm sorry for the inconvenience. Can you provide more details about the issue?",
-        "Understood. Did it arrive damaged or is it not working?"
+        "You're welcome! Anything else?",
+        "My pleasure! Let me know if you need more help.",
+        "Glad I could help!"
+      ]
+    },
+    {
+      "tag": "return",
+      "patterns": [
+        "i want to return a product", "need to make a return", "how do i return an item",
+        "it arrived damaged", "the product is defective", "it doesn't work", "it's broken",
+        "i want a refund", "i don't like it", "return please", "can i return this",
+        "wrong size", "wrong color", "not what i expected", "i changed my mind",
+        "i want to send it back", "return process", "how to return", "refund please"
+      ],
+      "responses": [
+        "I'm sorry about that. Could you tell me what happened with the product?",
+        "No problem. Did it arrive damaged or is it defective?"
+      ]
+    },
+    {
+      "tag": "cancel_order",
+      "patterns": [
+        "cancel my order", "i want to cancel", "how to cancel order", "stop my order",
+        "cancel please", "i don't want it anymore", "cancel the purchase", "remove order"
+      ],
+      "responses": [
+        "Sure, I can help you cancel. Please provide your order number.",
+        "No problem. Give me the order number and I'll cancel it right away."
       ]
     },
     {
       "tag": "track_order",
       "patterns": [
-        "where is my order",
-        "track shipment",
-        "tracking number",
-        "when will my package arrive",
-        "order status",
-        "my order hasn't arrived",
-        "tracking"
+        "where is my order", "track shipment", "tracking number", "when will it arrive",
+        "order status", "my order hasn't arrived", "tracking", "delivery status",
+        "where's my package", "when does it get here", "how many days left"
       ],
       "responses": [
-        "To track your order, please provide the order number.",
-        "Give me the tracking number and I'll help you check it."
+        "To check your order status, please provide the order number.",
+        "Sure! Just tell me the tracking or order number."
+      ]
+    },
+    {
+      "tag": "delivery_time",
+      "patterns": [
+        "how long does shipping take", "delivery time", "how many days", "when will it be delivered",
+        "shipping duration", "express shipping", "standard shipping", "fast delivery"
+      ],
+      "responses": [
+        "Standard shipping takes 3–7 business days. Express option available (1–2 days).",
+        "Delivery usually takes 3–5 business days depending on your location."
       ]
     },
     {
       "tag": "payment",
       "patterns": [
-        "how do I pay",
-        "payment methods",
-        "can I pay with card",
-        "do you accept PayPal",
-        "cash on delivery",
-        "how does payment work"
+        "how do i pay", "payment methods", "can i pay with card", "paypal", "credit card",
+        "do you accept paypal", "cash on delivery", "payment options", "how to pay"
       ],
       "responses": [
-        "We accept credit/debit cards, PayPal, and bank transfers.",
-        "You can pay with any card or PayPal at checkout."
+        "We accept all major credit/debit cards, PayPal, and bank transfer.",
+        "You can pay with card or PayPal at checkout."
       ]
     },
     {
-      "tag": "tech_support",
+      "tag": "warranty",
       "patterns": [
-        "my device won't turn on",
-        "button not working",
-        "it shuts down by itself",
-        "I have a technical issue",
-        "need help with the device"
+        "does it have warranty", "how long is the warranty", "guarantee", "is it guaranteed",
+        "warranty period", "what if it breaks", "return policy warranty"
       ],
       "responses": [
-        "Sorry for the issue. Can you tell me the model and what's happening?",
-        "Let's fix it. What symptoms is the product showing?"
+        "All products come with a 12-month warranty against manufacturing defects.",
+        "Yes, 1-year warranty included. We'll repair or replace if needed."
       ]
     },
     {
-      "tag": "hours",
+      "tag": "product_info",
       "patterns": [
-        "what time do you open",
-        "what are your hours",
-        "until what time are you open",
-        "open on Sundays"
+        "what material is it", "what colors are available", "sizes", "what's it made of",
+        "product details", "tell me about this item", "specifications", "features"
       ],
       "responses": [
-        "We are open Monday to Friday from 9:00 AM to 6:00 PM, and Saturday from 10:00 AM to 2:00 PM.",
-        "Our hours are 9 AM to 6 PM, Monday to Friday."
+        "Sure! Which product are you interested in? I can give you all the details.",
+        "Let me know the product name or code and I'll tell you everything."
       ]
     },
     {
-      "tag": "shipping",
+      "tag": "size_exchange",
       "patterns": [
-        "how long does shipping take",
-        "do you ship to other provinces",
-        "shipping cost",
-        "free shipping"
+        "wrong size", "i need a different size", "can i exchange size", "change to L",
+        "too small", "too big", "size exchange", "i ordered wrong size"
       ],
       "responses": [
-        "Shipping takes 2 to 5 business days depending on the region.",
-        "Yes, we ship nationwide. Cost depends on weight and destination."
+        "No problem! We can exchange the size. Please provide your order number.",
+        "Of course. Tell me the order number and the new size you need."
       ]
     },
     {
-      "tag": "thanks",
+      "tag": "order_number",
       "patterns": [
-        "thank you", "thanks", "thank you for helping",
-        "I appreciate it", "ok thanks"
+        "my order is", "order number", "it's", "the order is", "tracking",
+        "12345", "ABC123", "ORDER-98765", "#55555", "my order # is"
       ],
       "responses": [
-        "You're welcome! I'm here to help.",
-        "Glad to assist! Let me know if you need anything else."
+        "Perfect! With order #{} I'll process your request right away.",
+        "Got it! Order #{} noted. I'll take care of it."
       ]
     },
     {
@@ -132,20 +146,7 @@
       "patterns": [],
       "responses": [
         "I'm sorry, I didn't understand. Could you rephrase?",
-        "I'm not sure how to help. Can you provide more details?"
-      ]
-    },
-    {
-      "tag": "order_number",
-      "patterns": [
-        "my order is",
-        "the order is",
-        "it's",
-        "12345", "98765", "ABC123", "ORDER"
-      ],
-      "responses": [
-        "Perfect! With order #{} I'll process your return shortly.",
-        "Thanks. Order #{} will be reviewed and we'll contact you within 24 hours."
+        "Hmm, not sure what you mean. Can you try saying it differently?"
       ]
     }
   ]
