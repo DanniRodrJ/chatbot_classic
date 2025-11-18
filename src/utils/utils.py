@@ -25,13 +25,12 @@ def extract_order_number(text: str) -> str | None:
     patterns = [
         r'(?:order|it\'s|my order is|the order is)[\s#:]*([a-z0-9]{5,})',
         r'#\s*([a-z0-9]{5,})',
-        r'\b([a-z0-9]{5,})\b'  # fallback: any 5+ alphanum
+        r'\b([a-z0-9]{5,})\b'
     ]
     for pattern in patterns:
         match = re.search(pattern, text)
         if match:
             candidate = match.group(1).upper()
-            # Filter out common false positives
             if candidate.lower() not in {'order', 'number', 'code'}:
                 return candidate
 

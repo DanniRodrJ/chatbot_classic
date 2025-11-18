@@ -4,80 +4,60 @@ import streamlit as st
 from tensorflow.keras.models import Model
 import numpy as np
 import tensorflow as tf
-import json
-import urllib.parse
+import plotly.graph_objects as go
+import numpy as np
 
-st.set_page_config("Classic Intent Classifier", layout='wide', page_icon="robot")
+st.set_page_config("Classic Intent Classifier", layout='wide', page_icon="robot", initial_sidebar_state="expanded")
+st.theme = "auto"
 
 st.markdown("""
 <style>
-
     .stApp {
-        background: #0f0f0f;
-        color: #e0e0e0;
+        background: var(--background-color) !important;
+        color: var(--text-color) !important;
+    }
+
+    [data-testid="stAppViewContainer"] > .main,
+    [data-testid="stAppViewContainer"] > .main {
+        background: var(--background-color) !important;
+    }
+
+    section[data-testid="stChatInput"],
+    section[data-testid="stChatInput"] input,
+    .stChatInput > div > div > input {
+        background: var(--background-color) !important;
+        color: var(--text-color) !important;
+        border-color: var(--text-color) !important;
+    }
+
+    [data-testid="stChatMessageUser"] {
+        background: var(--secondary-background-color) !important;
+        color: var(--text-color) !important;
+    }
+
+    [data-testid="stChatMessageAssistant"] {
+        background: #2f855a !important;
+        color: white !important;
     }
 
     .main-title {
         text-align: center;
-        color: #f7fafc;
+        color: var(--text-color);
         font-size: 28px;
         margin: 20px 0 8px;
         font-weight: 600;
     }
     .subtitle {
         text-align: center;
-        color: #a0aec0;
+        color: var(--text-color);
+        opacity: 0.8;
         font-size: 14px;
         margin-bottom: 30px;
     }
 
-    [data-testid="stChatMessageUser"] {
-        background: #2d3748 !important;
-        color: #e2e8f0 !important;
-        border-radius: 16px 16px 4px 16px !important;
-        padding: 12px 16px !important;
-        max-width: 70% !important;
-        margin-left: auto !important;
-        margin-right: 10% !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        font-size: 15px;
+    .stHeader, .stFooter, header { 
+        display: none !important; 
     }
-
-    [data-testid="stChatMessageAssistant"] {
-        background: #2f855a !important;
-        color: white !important;
-        border-radius: 16px 16px 16px 4px !important;
-        padding: 12px 16px !important;
-        max-width: 70% !important;
-        margin-right: auto !important;
-        margin-left: 10% !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        font-size: 15px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    [data-testid="stChatMessageAssistant"]::before {
-        content: "robot";
-        font-size: 18px;
-    }
-
-    .stChatInput {
-        max-width: 700px !important;
-        margin: 0 auto !important;
-        padding: 0 20px !important;
-    }
-    .stChatInput > div > div > input {
-        background: #2d3748 !important;
-        color: white !important;
-        border-radius: 12px !important;
-        border: 1px solid #4a5568 !important;
-        padding: 12px !important;
-        font-size: 15px;
-    }
-
-    .stHeader, .stFooter { display: none !important; }
 
     .block-container {
         max-width: 700px !important;
@@ -87,16 +67,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='main-title'>Classic Intent Classifier</h1>", unsafe_allow_html=True)
-st.markdown("<p class='subtitle'>BoW + MLP • Non-LLM NLU • Full Control</p>", unsafe_allow_html=True)
-
 st.sidebar.image("https://img.icons8.com/fluency/100/brain.png", width=100)
-st.sidebar.markdown("### Navegación")
-page = st.sidebar.radio("Ir a:", ["Chatbot", "Brain Visualizer"], index=0)
+st.sidebar.markdown("### Navegation")
+page = st.sidebar.radio("Go to:", ["Chatbot", "Neural Network Visualizer"], index=0)
 
 chatbot = Chatbot()
 
 if page == "Chatbot":
+    st.markdown("<h1 class='main-title'>Classic Intent Classifier</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='subtitle'>BoW + MLP • Non-LLM NLU • Full Control</p>", unsafe_allow_html=True)
 
     if "messages" not in st.session_state: st.session_state.messages = []
     if "first_message" not in st.session_state: st.session_state.first_message = True
@@ -137,27 +116,36 @@ if page == "Chatbot":
             st.session_state.last_intent = insts[0]['intent']
 
 else:
-    st.markdown("## Neural Network Visualizer")
-    st.markdown("### 3D Interactive View (Plotly - rotate, zoom, hover for details)")
+    st.markdown("""
+    <style>
+        .block-container {max-width: 60vw !important; padding: 2rem !important;}
+    </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<h1 class='main-title'>Neural Network Visualizer</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='subtitle'>See how your message flows through the MLP • 3D Interactive</p>", unsafe_allow_html=True)
 
-    sentence = st.text_area("Enter a message:", value="I want to return a damaged product", height=80)
+    sentence = st.text_area("Enter a message:", value="I want to return a product", height=80, label_visibility="collapsed")
 
     if st.button("Visualize Forward Pass", type="primary", use_container_width=True):
-        with st.spinner("Processing BoW → Activations..."):
-            # Tu lógica exacta (sin errores de tolist)
+        with st.spinner("Processing entire network..."):
             sentence_clean = clean_sentence(sentence)
+
             bow = [0] * len(chatbot.words)
+            activated_indices = []
             for w in sentence_clean:
                 for i, word in enumerate(chatbot.words):
                     if word == w or word in get_synonyms(w):
-                        bow[i] = 1
+                        if bow[i] == 0:
+                            bow[i] = 1
+                            activated_indices.append(i)
                         break
+
             bow = np.array(bow, dtype=np.float32)
             input_vec = np.expand_dims(bow, axis=0)
 
             x = input_vec
-            activations = [bow.tolist()]
-
+            layer_activations = [bow.tolist()]
             for layer in [l for l in chatbot.model.layers if isinstance(l, tf.keras.layers.Dense)]:
                 w, b = layer.get_weights()
                 z = tf.matmul(x, w) + b
@@ -167,175 +155,144 @@ else:
                     x = tf.nn.softmax(z, axis=-1)
                 else:
                     x = z
-                # Fix: siempre a lista
-                act = x.numpy()[0].tolist() if hasattr(x, 'numpy') else x[0].tolist()
-                activations.append(act)
+                layer_activations.append(x.numpy()[0].tolist())
 
-            probs = chatbot.model.predict(input_vec, verbose=0)[0]
-            pred_idx = np.argmax(probs)
+            input_full = layer_activations[0]
+            hidden_128 = layer_activations[1]
+            hidden_64  = layer_activations[2]
+            output_13  = layer_activations[3]
+
+            pred_idx = np.argmax(output_13)
             predicted = chatbot.classes[pred_idx]
-            confidence = float(probs[pred_idx])
 
-            active_words = [chatbot.words[i] for i, val in enumerate(bow) if val == 1][:8]  # Limit 8 para viz
+            st.success(f"**Prediction:** `{predicted}` | **Confidence:** {output_13[pred_idx]:.1%}")
+            active_words = [chatbot.words[i] for i in activated_indices]
+            st.warning(f"**Activated words ({len(active_words)}):** {', '.join(active_words)}")
+            st.info(f"**Total vocabulary:** {len(chatbot.words)} words")
+            st.divider()
 
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            st.success(f"**Predicted Intent:** `{predicted}`")
-            st.info(f"**Confidence:** {confidence:.1%}")
-            st.warning(f"**Active Words:** {', '.join(active_words) if active_words else 'None'}")
-            st.markdown("### Top 3 Intents")
-            for intent, prob in sorted(zip(chatbot.classes, probs), key=lambda x: -x[1])[:3]:
-                st.write(f"- `{intent}` → {prob:.1%}")
+            word_in_input = [""] * len(input_full)
+            for idx in activated_indices:
+                word_in_input[idx] = chatbot.words[idx]
 
-        with col2:
-            import plotly.graph_objects as go
-            import numpy as np
+            #input_rows, input_cols = 42, 40
 
-            # --- Forward pass ---
-            active_indices = np.where(bow == 1)[0]
-            active_words = [chatbot.words[i] for i in active_indices[:16]]  # grid 4x4 para input
+            layers = [
+                {"acts": input_full, "grid": (15, 11), "z": 0, "name": "Input (165)"},
+                {"acts": hidden_128, "grid": (16, 8), "z": 200, "name": "Hidden 128"},
+                {"acts": hidden_64,  "grid": (8, 8), "z": 400, "name": "Hidden 64"},
+                {"acts": output_13,  "grid": (1, 13), "z": 600, "name": "Output 13"}
+            ]
 
-            x = input_vec
-            activations = [bow.tolist()[:16]]  # Input grid 4x4
-
-            for layer in [l for l in chatbot.model.layers if isinstance(l, tf.keras.layers.Dense)]:
-                w, b = layer.get_weights()
-                z = tf.matmul(x, w) + b
-                if layer.activation == tf.keras.activations.relu:
-                    x = tf.nn.relu(z)
-                elif layer.activation == tf.keras.activations.softmax:
-                    x = tf.nn.softmax(z, axis=-1)
-                else:
-                    x = z
-                act = x.numpy()[0].tolist()
-                # Hidden: 64 neuronas visibles (grid 8x8)
-                visible = act[:64] if len(act) >= 64 else act + [0]*(64-len(act))
-                activations.append(visible)
-
-            # Output: 10 intents (fila)
-            output_probs = activations[-1][:10] if len(activations[-1]) >= 10 else activations[-1] + [0]*10
-
-            # --- Capas: input (4x4 grid), hidden (8x8 grid), output (1x10 fila) ---
-            layers = [activations[0], activations[1], output_probs]
-            layer_names = ["Input (palabras)", "Hidden (128→64 visibles)", "Output (intents)"]
-            layer_z = [0, 60, 120]  # separación 3D
-
-            # Grids por capa
-            grid_sizes = [[4, 4], [8, 8], [1, 10]]  # filas x columnas
 
             fig = go.Figure()
 
-            x_coords, y_coords, z_coords = [], [], []
-            sizes, colors, hover_texts = [], [], []
+            NEURON_SIZE = 10
 
-            for l, (acts, grid, z_pos, name) in enumerate(zip(layers, grid_sizes, layer_z, layer_names)):
-                rows, cols = grid
-                act_flat = acts[:rows*cols]
-                spacing_x = 4 if l == 0 else 2 if l == 1 else 1
-                spacing_y = 4 if l == 0 else 2 if l == 1 else 1
+            for l, layer in enumerate(layers):
+                acts = layer["acts"]
+                rows, cols = layer["grid"]
+                z_pos = layer["z"]
 
-                for row in range(rows):
-                    for col in range(cols):
-                        idx = row * cols + col
-                        if idx >= len(act_flat):
-                            val = 0
-                        else:
-                            val = act_flat[idx]
+                if l == 0:
+                    spacing = 5.0
+                elif l == 1:
+                    spacing = 8.0
+                elif l == 2:
+                    spacing = 12.0
+                else:
+                    spacing = 28.0
 
-                        x_pos = col * spacing_x - (cols - 1) * spacing_x / 2
-                        y_pos = row * spacing_y - (rows - 1) * spacing_y / 2
-                        z_pos_layer = z_pos
+                for r in range(rows):
+                    for c in range(cols):
+                        idx = r * cols + c
+                        if idx >= len(acts): continue
+                        val = acts[idx]
 
-                        # Color: gris o rojo
-                        color = 'red' if val > 0.1 else 'gray'
-                        size = 12  # mismo tamaño
+                        x = c * spacing - (cols-1)*spacing/2
+                        y = r * spacing - (rows-1)*spacing/2
 
-                        # Hover
-                        hover = f"<b>{name}</b><br>Neurona ({row},{col}) | Act: {val:.3f}<br>"
-                        if l == 0 and idx < len(active_words):
-                            hover += f"Palabra: <b>{active_words[idx]}</b>"
-                        if l == 2:
-                            intent = chatbot.classes[idx] if idx < len(chatbot.classes) else f"intent_{idx}"
-                            hover += f"Intent: <b>{intent}</b> ({val:.1%})"
+                        is_active = (l == 0 and val == 1.0) or (l > 0 and val > 0.08)
+                        color = '#ff3333' if is_active else "#767676"  # #333333
+                        opacity = 0.8 if is_active else 0.4
 
-                        x_coords.append(x_pos)
-                        y_coords.append(y_pos)
-                        z_coords.append(z_pos_layer)
-                        sizes.append(size)
-                        colors.append(color)
-                        hover_texts.append(hover)
+                        hover = f"<b>{layer['name']}</b><br>Neuron {idx}<br>Value: {val:.4f}<br>"
+                        if l == 0 and word_in_input[idx]:
+                            hover += f"Word: <b>{word_in_input[idx]}</b>"
+                        if l == 3:
+                            intent = chatbot.classes[idx]
+                            hover += f"<br>Intent: <b>{intent}</b>"
+                            if idx == pred_idx: hover += " ← FORECAST"
 
-            # Neuronas
-            fig.add_trace(go.Scatter3d(
-                x=x_coords, y=y_coords, z=z_coords,
-                mode='markers',
-                marker=dict(
-                    size=sizes,
-                    color=colors,
-                    colorscale=[[0, 'gray'], [1, 'red']],  # solo 2 colores
-                    opacity=0.9,
-                    line=dict(color='white', width=1)
-                ),
-                text=hover_texts,
-                hoverinfo='text',
-                name="Neuronas"
-            ))
+                        fig.add_trace(go.Scatter3d(
+                            x=[x], y=[y], z=[z_pos],
+                            mode='markers',
+                            marker=dict(size=NEURON_SIZE, color=color, opacity=opacity,
+                                        line=dict(color='white', width=0.5)),
+                            text=hover, hoverinfo='text', showlegend=False
+                        ))
 
-            # --- Conexiones entre capas (solo activas, en grid) ---
-            for l in range(len(layers)-1):
-                z1, z2 = layer_z[l], layer_z[l+1]
-                grid1, grid2 = grid_sizes[l], grid_sizes[l+1]
-                rows1, cols1 = grid1
-                rows2, cols2 = grid2
-                acts1, acts2 = layers[l], layers[l+1]
+            for l in range(3):
+                z1, z2 = layers[l]["z"], layers[l+1]["z"]
+                acts1, acts2 = layers[l]["acts"], layers[l+1]["acts"]
+                r1, c1 = layers[l]["grid"]
+                r2, c2 = layers[l+1]["grid"]
 
-                spacing_x1 = 4 if l == 0 else 2
-                spacing_y1 = 4 if l == 0 else 2
-                spacing_x2 = 2 if l == 0 else 1
-                spacing_y2 = 2 if l == 0 else 1
+                sp1 = 1.8 if l == 0 else 8.0 if l == 1 else 12.0
+                sp2 = 8.0 if l == 0 else 12.0 if l == 1 else 28.0
 
-                for r1 in range(rows1):
-                    for c1 in range(cols1):
-                        idx1 = r1 * cols1 + c1
-                        if idx1 >= len(acts1) or acts1[idx1] < 0.1: continue
+                active1 = [i for i, v in enumerate(acts1) if v > 0.08][:100]
 
-                        x1 = c1 * spacing_x1 - (cols1 - 1) * spacing_x1 / 2
-                        y1 = r1 * spacing_y1 - (rows1 - 1) * spacing_y1 / 2
+                for i in active1:
+                    r1_i, c1_i = divmod(i, c1)
+                    x1 = c1_i * sp1 - (c1-1)*sp1/2
+                    y1 = r1_i * sp1 - (r1-1)*sp1/2
 
-                        for r2 in range(rows2):
-                            for c2 in range(cols2):
-                                idx2 = r2 * cols2 + c2
-                                if idx2 >= len(acts2) or acts2[idx2] < 0.1: continue
+                    for j in range(len(acts2)):
+                        if acts2[j] < 0.08: continue
+                        r2_j, c2_j = divmod(j, c2)
+                        x2 = c2_j * sp2 - (c2-1)*sp2/2
+                        y2 = r2_j * sp2 - (r2-1)*sp2/2
 
-                                x2 = c2 * spacing_x2 - (cols2 - 1) * spacing_x2 / 2
-                                y2 = r2 * spacing_y2 - (rows2 - 1) * spacing_y2 / 2
+                        fig.add_trace(go.Scatter3d(
+                            x=[x1,x2], y=[y1,y2], z=[z1,z2],
+                            mode='lines',
+                            line=dict(color='#00ffff', width=1),
+                            opacity=0.15,
+                            hoverinfo='none',
+                            showlegend=False
+                        ))
 
-                                strength = min(acts1[idx1], acts2[idx2])
-
-                                fig.add_trace(go.Scatter3d(
-                                    x=[x1, x2], y=[y1, y2], z=[layer_z[l], layer_z[l+1]],
-                                    mode='lines',
-                                    line=dict(color='cyan', width=1.5),
-                                    opacity=strength * 0.6,
-                                    hoverinfo='none',
-                                    showlegend=False
-                                ))
-
-            # --- Estilo 3D inmersivo ---
             fig.update_layout(
-                title="Red Neuronal MLP - 3D Interactiva (grid real)",
+                height=1000,
                 scene=dict(
-                    xaxis=dict(title="X", showgrid=False, zeroline=False),
-                    yaxis=dict(title="Y", showgrid=False, zeroline=False),
-                    zaxis=dict(title="Capas", tickvals=layer_z, ticktext=layer_names),
                     bgcolor="black",
-                    camera=dict(eye=dict(x=1.5, y=1.5, z=1.5))  # vista diagonal 3D real
+                    camera=dict(eye=dict(x=2.1, y=2.1, z=1.7)),
+                    xaxis=dict(showbackground=True, backgroundcolor="rgba(5,5,20,0.9)", 
+                            gridcolor="rgba(100,150,255,0.15)", showgrid=True, visible=False),
+                    yaxis=dict(showbackground=True, backgroundcolor="rgba(5,5,20,0.9)", 
+                            gridcolor="rgba(100,150,255,0.15)", showgrid=True, visible=False),
+                    zaxis=dict(
+                        showgrid=True,
+                        gridcolor="rgba(100,200,255,0.3)",
+                        zerolinecolor="#eeeeee",
+                        zerolinewidth=3,
+                        tickvals=[0, 180, 360, 540],
+                        ticktext=["Input (165)", "Hidden 128", "Hidden 64", "Output 13"],
+                        tickfont=dict(color="#eeeeee", size=12, family="Consolas"),
+                        title="Layers"  
+                    ),
+                    aspectmode='manual',
+                    aspectratio=dict(x=1.8, y=1.8, z=1.2)
                 ),
                 paper_bgcolor="black",
-                font=dict(color="white"),
-                height=750,
-                margin=dict(l=0, r=0, t=60, b=0)
+                margin=dict(l=0, r=0, t=40, b=0),
+                title=dict(
+                    text="Neural Network MLP • BoW + 165 words → 128 → 64 → 13 intents",
+                    font=dict(color="#00ffff", size=18, family="Courier New"),
+                    x=0.5, y=0.98, xanchor="center", yanchor="top"
+                )
             )
 
             st.plotly_chart(fig, use_container_width=True)
-            st.caption("3D real: rotar para ver profundidad | Hover para palabra/intent | Conexiones solo activas")
+            st.caption("Rotate: click + drag | Zoom: wheel | Hover: word / intent")

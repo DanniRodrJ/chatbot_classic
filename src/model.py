@@ -28,6 +28,7 @@ class ChatbotTrainer:
     def preprocess(self):
         for intent in self.intents['intents']:
             for pattern in intent['patterns']:
+                # 1. Tokenizar + lematizar + limpiar desde el inicio
                 tokens = nltk.word_tokenize(pattern.lower())
                 tokens = [t for t in tokens if t not in self.ignore_words]
                 w = [self.lemmatizer.lemmatize(t) for t in tokens]
@@ -38,14 +39,14 @@ class ChatbotTrainer:
                 self.words.extend(w)
                 self.documents.append((w, intent['tag']))
                 
-                for word in tokens: 
-                    for syn in get_synonyms(word):
-                        syn_tokens = nltk.word_tokenize(syn.lower())
-                        syn_clean = [s for s in syn_tokens if s not in self.ignore_words]
-                        syn_lem = [self.lemmatizer.lemmatize(s) for s in syn_clean]
-                        if syn_lem:
-                            self.words.extend(syn_lem)
-                            self.documents.append((syn_lem, intent['tag']))
+                # for word in tokens:
+                #     for syn in get_synonyms(word):
+                #         syn_tokens = nltk.word_tokenize(syn.lower())
+                #         syn_clean = [s for s in syn_tokens if s not in self.ignore_words]
+                #         syn_lem = [self.lemmatizer.lemmatize(s) for s in syn_clean]
+                #         if syn_lem:
+                #             self.words.extend(syn_lem)
+                #             self.documents.append((syn_lem, intent['tag']))
                             
             if intent['tag'] not in self.classes:
                 self.classes.append(intent['tag'])
@@ -73,6 +74,7 @@ class ChatbotTrainer:
         y_test = np.array([t[1] for t in test_data])
         
         return X_train, X_test, y_train, y_test
+        #return np.array([t[0] for t in training]), np.array([t[1] for t in training])
 
     def build_model(self, input_size, output_size):
         model = Sequential([
@@ -103,7 +105,7 @@ class ChatbotTrainer:
             verbose=1
         )
         
-        print(f"Entrenando con {len(X_train):,} muestras (train) y {len(X_test):,} muestras (test)")
+        print(f"Training with {len(X_train):,} samples (train) and {len(X_test):,} samples (test)")
         
         history = model.fit(
             X_train, y_train,
@@ -114,6 +116,7 @@ class ChatbotTrainer:
             verbose=1
         )
         
+        # === MÉTRICAS REALES Y CORRECTAS ===
         best_epoch = np.argmax(history.history['val_accuracy'])
         best_val_acc = history.history['val_accuracy'][best_epoch]
         best_val_loss = history.history['val_loss'][best_epoch]
@@ -124,6 +127,7 @@ class ChatbotTrainer:
         print(f"   → Test Loss     : {best_val_loss:.4f}")
         print(f"   → It stopped at epoch {final_epoch} (early stopping)")
         
+        # === GUARDAR MODELO Y MÉTRICAS ===
         os.makedirs(MODEL_DIR, exist_ok=True)
         model.save(MODEL_PATH)
         with open(WORDS_PATH, 'wb') as f: pickle.dump(self.words, f)

@@ -16,6 +16,7 @@ A fully controllable, explainable intent classification system using **Bag of Wo
 | **TensorFlow / Keras** | MLP model training & inference |
 | **NLTK** | Tokenization, lemmatization, synonym expansion |
 | **Streamlit** | Production-ready local UI |
+| **Plotly 3D** | Neural network visualization|
 | **BoW** | Text-to-vector encoding |
 
 ## 🔬 ```Technical Overview```
@@ -23,7 +24,7 @@ A fully controllable, explainable intent classification system using **Bag of Wo
 | Component | Implementation |
 |---------|----------------|
 | **Model** | MLP (128 → 64 → N) with Dropout |
-| **Feature Engineering** | BoW + lemmatization + WordNet synonyms |
+| **Feature Engineering** | BoW + lemmatization |
 | **Preprocessing** | NLTK (tokenization, lemmatization) |
 | **Context** | Previous intent state (`last_intent`) |
 | **Entity Extraction** | **Regex + Slot Filling** |
@@ -38,26 +39,28 @@ chatbot_classic/
 ├── assets/
 │
 ├── data/
-│   └── intents.json
+│   ├── intents.json
+│   └── intents_test_only.json  # Zero-shot evaluation
 │
-├── models/               # Generated artifacts
+├── models/                     # Generated artifacts
 │   ├── chatbot_model.keras
 │   ├── words.pkl
 │   └── classes.pkl
 │
 ├── src/
 │   ├── __init__.py
-│   ├── config.py         # Path management
-│   ├── model.py          # Training pipeline
-│   ├── chatbot.py        # Inference engine
+│   ├── config.py              # Path management
+│   ├── model.py               # Training pipeline
+│   ├── chatbot.py             # Inference engine
 │   └── utils/
-│       └── utils.py      # Preprocessing + NLTK auto-download
+│       └── utils.py           # Preprocessing + NLTK auto-download
 │
 ├── .gitignore
-├── app.py                # Streamlit frontend
+├── app.py                     # Streamlit frontend
 ├── README.md   
+├── evaluate_zero_shot.py
 ├── requirements.txt
-└── training_chatbot.py   # Training entrypoint
+└── training_chatbot.py        # Training entrypoint
 ```
 
 ## ⬇️ ```Inference Pipeline```
@@ -67,11 +70,13 @@ The inference engine processes the input to determine intent and fill in key slo
 ```bash
 Input: "I want to return a damaged item"
         ↓
-Tokenization → Lemmatization → Synonym Expansion
+Tokenization → Lemmatization → ["want", "return", "damaged", "item"]
         ↓
-Bag of Words (compare with original words and expanded synonyms) → [0, 1, 0, 1, ...] (binary vector)
+Bag of Words Vector → [0, 1, 0, 1, ...] (165-dim)
         ↓
-MLP → [0.02, 0.91, 0.01, ...] → intent: "return"
+MLP (128→64→13) → [0.02, 0.91, 0.01, ...]
+        ↓
+Predicted intent: "return" (91% confidence)
         ↓
 Context & Entity Check: last_intent = "return"
 - last_intent = "return"
@@ -95,13 +100,26 @@ Sequential([
 
 - **Optimizer**: SGD with exponential decay
 - **Loss**: categorical_crossentropy
-- **Training**: 200 epochs, batch size 5
+- **Training**: 300 epochs, batch size 5
+
+## 👀 ```Neural Network Visualizer (3D Interactive)```
+
+See **exactly** how your message flows through the neural network:
+
+- Which words activate the BoW vector
+- Neuron activations layer by layer
+- Final softmax probabilities
+- Hover to see words and intents
+
+→ Try the [Neural Network Visualizer](http://localhost:8501) (second page)
+
+![Neural Visualizer](/assets/neural-visualizer-screenshot.png)
 
 ## ⭐ ```Key Features```
 
 |Feature|Description|
 |-------|-----------|
-|**Intent Classification**|11 predefined intents|
+|**Intent Classification**|13 predefined intents|
 |**Simple Context** | Uses last_intent for conversational flow|
 |**Slot Filling (Enhanced)**|Order numbers extracted via regex and used to format the response|
 |**Response Deduplication**|Filters repeated responses|
@@ -112,18 +130,19 @@ Sequential([
 
 | Metric                          | Value       | Notes                                      |
 |---------------------------------|-------------|----------------------------------------------------|
-| Raw Intent Accuracy             | **50.6%**   | 15 real-world intents · 500+ patterns · BoW + MLP |
-| Best epoch                      | 16 / 31     | Early stopping + restore_best_weights            |
+| Raw Intent Accuracy             | **60.0%**   | Best epoch 16 • Early stopping • No synonym noise |
+| **Zero-Shot Real-World Accuracy**     | **54.84%**    | 93 completely unseen natural English phrases |
 | **Effective Conversational Accuracy** | **>95%** | Context tracking + slot filling + regex fallbacks |
-| Inference time                  | < 5 ms      | CPU only                                           |
-| Cost                            | $0          | No LLM · No API                                    |
-| Full Control                    | 100%        | On-premise · 100% explainable                      |
+| Inference time                        | **< 5 ms**  | CPU only |
+| Model size                            | **~95 KB**  | Tiny & deployable anywhere |
+| Cost                                  | **$0**      | 100% local • No APIs |
 
 > **Key insight**:  
-> In classic NLU systems with >10 intents, raw accuracy above 60% is extremely rare without embeddings.  
-> What truly matters in production is **effective accuracy in real conversation** — and this system achieves **95%+** through smart context management and engineering, not brute-force model size.
+> WordNet synonym augmentation **was disabled after testing** — it introduced noise and hurt generalization.  
+> Result: **+10% validation** and **+8–10% real-world accuracy**.  
+> This is real engineering: **less noise > more data**.
 
-Trained with synonym augmentation (WordNet) and 80/20 stratified split.
+**Zero-shot evaluation**: `python evaluate_zero_shot.py` → 54.84% on 100% unseen phrases.
 
 ## ⚠️ ```Known Limitations```
 
@@ -155,6 +174,7 @@ cd chatbot_classic
 pip install -r requirements.txt
 python training_chatbot.py
 streamlit run app.py
+python evaluate_zero_shot.py
 ```
 
 > **NLTK** data is automatically downloaded on first import.

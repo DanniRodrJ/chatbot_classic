@@ -1,0 +1,94 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hey man", "what's good", "yo", "sup", "how's it going",
+        "heya", "morning", "afternoon", "evening", "wassup"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "catch you later", "gotta run", "peace out", "see ya",
+        "talk later", "I'm out", "later dude", "cya", "bye for now",
+        "have a good one"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "thanks man", "cheers", "appreciate it", "thank you so much",
+        "you're the best", "nice one", "thanks a bunch", "sweet thanks",
+        "cool thanks", "thx"
+      ]
+    },
+    {
+      "tag": "return",
+      "patterns": [
+        "this thing came broken", "it's cracked", "arrived totally damaged",
+        "the screen is smashed", "want to send this back", "it's defective",
+        "doesn't work at all", "changed my mind", "not what I expected",
+        "received the wrong item", "need to return please", "this is trash"
+      ]
+    },
+    {
+      "tag": "cancel_order",
+      "patterns": [
+        "never mind cancel it", "just cancel everything", "don't want it anymore",
+        "forget the order", "cancel please", "changed my mind cancel",
+        "don't ship it", "stop the order"
+      ]
+    },
+    {
+      "tag": "track_order",
+      "patterns": [
+        "where the hell is my package", "still haven't got anything",
+        "when is this showing up", "what's taking so long", "tracking update?",
+        "has it shipped yet", "where's my stuff", "any update on delivery"
+      ]
+    },
+    {
+      "tag": "delivery_time",
+      "patterns": [
+        "how long until it ships", "when do you guys ship", "how many days",
+        "is it fast shipping", "does it arrive this week", "express option?"
+      ]
+    },
+    {
+      "tag": "payment",
+      "patterns": [
+        "can I pay with Apple Pay", "do you take Venmo", "installments?",
+        "can I split payment", "credit card only?", "paypal ok?"
+      ]
+    },
+    {
+      "tag": "warranty",
+      "patterns": [
+        "is this covered", "how long warranty", "what if it breaks",
+        "manufacturer warranty?", "do you replace if faulty"
+      ]
+    },
+    {
+      "tag": "product_info",
+      "patterns": [
+        "what material is this", "available colors", "what sizes do you have",
+        "waterproof?", "how heavy is it", "dimensions please"
+      ]
+    },
+    {
+      "tag": "size_exchange",
+      "patterns": [
+        "it's too small", "ordered wrong size", "need to swap for XL",
+        "runs small", "way too big", "can I exchange size"
+      ]
+    },
+    {
+      "tag": "order_number",
+      "patterns": [
+        "it's order 887766", "number is 445566", "code ORD-991122",
+        "here's the number: 334455", "112233", "tracking #778899"
+      ]
+    }
+  ]
+}
