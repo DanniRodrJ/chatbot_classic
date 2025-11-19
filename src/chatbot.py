@@ -4,11 +4,12 @@ import numpy as np
 import re
 import random
 from tensorflow.keras.models import load_model
-from src.utils.utils import clean_sentence, get_synonyms, extract_order_number
+from src.utils.utils import clean_sentence, get_synonyms, extract_order_number, ensure_nltk_data
 from src.config import DATA_PATH, MODEL_PATH, WORDS_PATH, CLASSES_PATH
 
 class Chatbot:
     def __init__(self):
+        ensure_nltk_data()
         with open(DATA_PATH, 'r', encoding='utf-8') as f:
             self.intents = json.load(f)
         self.words = pickle.load(open(WORDS_PATH, 'rb'))
