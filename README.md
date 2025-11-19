@@ -7,6 +7,7 @@ A fully controllable, explainable intent classification system using **Bag of Wo
 ## 🚀 ```Demo```
 
 ![Demo](/assets/demo.gif)
+→ Try the [Classic Intent Classifier](https://chatbotclassic-dannirodrj.streamlit.app/)
 
 ## ⚙️ ```Tech Stack```
 
@@ -111,7 +112,7 @@ See **exactly** how your message flows through the neural network:
 - Final softmax probabilities
 - Hover to see words and intents
 
-→ Try the [Neural Network Visualizer](http://localhost:8501) (second page)
+→ Try the [Neural Network Visualizer](https://chatbotclassic-dannirodrj.streamlit.app/) (second page)
 
 ![Neural Visualizer](/assets/neural-visualizer-screenshot.png)
 
