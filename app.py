@@ -106,7 +106,7 @@ if page == "Chatbot":
         if insts[0]['intent'] == 'order_number' or (last_response and 'order number' in last_response.lower()):
             order_num_slot = extract_order_number(prompt) or prompt.strip()
         
-        res = chatbot.get_response(insts, last_response,order_number=order_num_slot)
+        res = chatbot.get_response(insts,prompt, last_response,order_number=order_num_slot)
         
         with st.chat_message("assistant"):
             st.markdown(res)
@@ -178,16 +178,16 @@ else:
             #input_rows, input_cols = 42, 40
 
             layers = [
-                {"acts": input_full, "grid": (15, 11), "z": 0, "name": "Input (165)"},
+                {"acts": input_full, "grid": (14, 15), "z": 0, "name": "Input (206)"},
                 {"acts": hidden_128, "grid": (16, 8), "z": 200, "name": "Hidden 128"},
                 {"acts": hidden_64,  "grid": (8, 8), "z": 400, "name": "Hidden 64"},
-                {"acts": output_13,  "grid": (1, 13), "z": 600, "name": "Output 13"}
+                {"acts": output_13,  "grid": (1, 18), "z": 600, "name": "Output 18"}
             ]
 
 
             fig = go.Figure()
 
-            NEURON_SIZE = 10
+            NEURON_SIZE = 9
 
             for l, layer in enumerate(layers):
                 acts = layer["acts"]
@@ -238,10 +238,12 @@ else:
                 r1, c1 = layers[l]["grid"]
                 r2, c2 = layers[l+1]["grid"]
 
-                sp1 = 1.8 if l == 0 else 8.0 if l == 1 else 12.0
+                sp1 = 5.0 if l == 0 else 8.0 if l == 1 else 12.0
                 sp2 = 8.0 if l == 0 else 12.0 if l == 1 else 28.0
 
-                active1 = [i for i, v in enumerate(acts1) if v > 0.08][:100]
+                #active1 = [i for i, v in enumerate(acts1) if v > 0.08][:100]
+                active1 = [i for i, v in enumerate(acts1) if (l == 0 and v == 1.0) or (l > 0 and v > 0.08)]
+                active1 = active1[:120] if l == 0 else active1
 
                 for i in active1:
                     r1_i, c1_i = divmod(i, c1)
@@ -267,7 +269,7 @@ else:
                 height=1000,
                 scene=dict(
                     bgcolor="black",
-                    camera=dict(eye=dict(x=2.1, y=2.1, z=1.7)),
+                    camera=dict(eye=dict(x=2.2, y=2.2, z=1.6)),
                     xaxis=dict(showbackground=True, backgroundcolor="rgba(5,5,20,0.9)", 
                             gridcolor="rgba(100,150,255,0.15)", showgrid=True, visible=False),
                     yaxis=dict(showbackground=True, backgroundcolor="rgba(5,5,20,0.9)", 
@@ -277,20 +279,20 @@ else:
                         gridcolor="rgba(100,200,255,0.3)",
                         zerolinecolor="#eeeeee",
                         zerolinewidth=3,
-                        tickvals=[0, 180, 360, 540],
-                        ticktext=["Input (165)", "Hidden 128", "Hidden 64", "Output 13"],
+                        tickvals=[0, 220, 440, 660],
+                        ticktext=["Input (206)", "Hidden 128", "Hidden 64", "Output 18"],
                         tickfont=dict(color="#eeeeee", size=12, family="Consolas"),
                         title="Layers"  
                     ),
                     aspectmode='manual',
-                    aspectratio=dict(x=1.8, y=1.8, z=1.2)
+                    aspectratio=dict(x=2, y=2, z=1.3)
                 ),
                 paper_bgcolor="black",
-                margin=dict(l=0, r=0, t=40, b=0),
+                margin=dict(l=0, r=0, t=50, b=0),
                 title=dict(
-                    text="Neural Network MLP • BoW + 165 words → 128 → 64 → 13 intents",
+                    text="Neural Network MLP • BoW + 206 words → 128 → 64 → 18 intents",
                     font=dict(color="#00ffff", size=18, family="Courier New"),
-                    x=0.5, y=0.98, xanchor="center", yanchor="top"
+                    x=0.5, y=0.95, xanchor="center", yanchor="top"
                 )
             )
 

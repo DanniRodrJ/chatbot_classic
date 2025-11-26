@@ -119,7 +119,7 @@ See **exactly** how your message flows through the neural network:
 
 |Feature|Description|
 |-------|-----------|
-|**Intent Classification**|13 predefined intents|
+|**Intent Classification**|18 predefined intents|
 |**Simple Context** | Uses last_intent for conversational flow|
 |**Slot Filling (Enhanced)**|Order numbers extracted via regex and used to format the response|
 |**Response Deduplication**|Filters repeated responses|
@@ -130,7 +130,7 @@ See **exactly** how your message flows through the neural network:
 
 | Metric                          | Value       | Notes                                      |
 |---------------------------------|-------------|----------------------------------------------------|
-| Raw Intent Accuracy             | **60.0%**   | Best epoch 16 • Early stopping • No synonym noise |
+| Raw Intent Accuracy             | **58.33%**   | Best epoch 60 • Early stopping • No synonym noise |
 | **Zero-Shot Real-World Accuracy**     | **54.84%**    | 93 completely unseen natural English phrases |
 | **Effective Conversational Accuracy** | **>95%** | Context tracking + slot filling + regex fallbacks |
 | Inference time                        | **< 5 ms**  | CPU only |
@@ -155,14 +155,18 @@ See **exactly** how your message flows through the neural network:
 
 > **These are inherent to the classic design and fully controlled**
 
-## ⏭️ ```Project Evolution```
+## 📖 ```Chatbot Evolution```
 
-| Level | Focus | Repository |
-|------|---------|-----------|
-| 1 | **Clásico** | `chatbot_classic` |
-| 2 | **Embeddings + Sequence** | [chatbot-word2vec](https://github.com/tuusuario/chatbot-word2vec) |
-| 3 | **Transformers** | [chatbot-bert](https://github.com/tuusuario/chatbot-bert) |
-| 4 | **LLM Integration** | [chatbot-llm](https://github.com/tuusuario/chatbot-llm) |
+This project demonstrates the early stages of chatbot development, focusing on transparency and simplicity. Here's how chatbots have evolved, with this repo as the foundation:
+
+| Stage | Description | Key Technologies | Repository |
+|------|-------|------|------|
+| **1. Rule-Based / Classic** | Simple pattern matching and fixed responses. Fully explainable, no "black box." Iterated to handle multi-turn flows like product queries without gaps. | BoW, MLP, Regex | This repo: `chatbot_classic` |
+| **2. Embeddings + Sequence Modeling** | Improved semantic understanding with word vectors and RNNs/LSTMs for context. | Word2Vec/GloVe, LSTM| [chatbot-word2vec](https://github.com/tuusuario/chatbot-word2vec) (upcoming)|
+| **3. Transformers** | Attention mechanisms for better handling of long contexts and nuances. |BERT, Fine-tuning|[chatbot-bert](https://github.com/tuusuario/chatbot-bert) (upcoming)|
+| **4. LLM Integration** | Generative AI for dynamic responses, but with reduced transparency. |GPT-like models, Prompt Engineering| [chatbot-llm](https://github.com/tuusuario/chatbot-llm) (upcoming)|
+
+In each stage, the focus remains on understanding "what happens inside": from explicit rules to probabilistic models. This repo (Stage 1) avoids black boxes by using traceable components like BoW vectors and MLP activations.
 
 ## 💻 ```Setup & Run```
 
@@ -185,23 +189,26 @@ python evaluate_zero_shot.py
 # Edit data/documentacion.json
 python training_chatbot.py  # Overwrites models/
 ...
-766/766 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7361 - loss: 0.5940  
-Epoch 25/300
-766/766 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7416 - loss: 0.5875  
-Epoch 26/300
-766/766 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7326 - loss: 0.5919  
-Epoch 27/300
-766/766 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7400 - loss: 0.5924  
-Epoch 28/300
-766/766 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7448 - loss: 0.5758  
-Epoch 29/300
-766/766 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7337 - loss: 0.5844  
-Epoch 30/300
-766/766 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7324 - loss: 0.5892  
-Epoch 31/300
-766/766 ━━━━━━━━━━━━━━━━━━━━ 2s 2ms/step - accuracy: 0.7372 - loss: 0.5880  
-Epoch 31: early stopping
-Restoring model weights from the end of the best epoch: 16.
+Epoch 70/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 4ms/step - accuracy: 0.9504 - loss: 0.1970 - val_accuracy: 0.5278 - val_loss: 2.2109
+Epoch 71/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9574 - loss: 0.2625 - val_accuracy: 0.5556 - val_loss: 2.1811
+Epoch 72/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9220 - loss: 0.2781 - val_accuracy: 0.5556 - val_loss: 2.1882
+Epoch 73/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9433 - loss: 0.2357 - val_accuracy: 0.5556 - val_loss: 2.2329
+Epoch 74/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9220 - loss: 0.2763 - val_accuracy: 0.4722 - val_loss: 2.1935
+Epoch 75/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 4ms/step - accuracy: 0.9291 - loss: 0.2800 - val_accuracy: 0.5278 - val_loss: 2.2353
+Epoch 75: early stopping
+Restoring model weights from the end of the best epoch: 60.
+
+BEST RESULT (epoch 60):
+   → Test Accuracy : 0.5833 (58.33%)
+   → Test Loss     : 2.1446
+   → It stopped at epoch 75 (early stopping)
+Model and metrics saved successfully.
 ```
 
 ## 👩‍💻 ```Developer```

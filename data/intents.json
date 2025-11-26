@@ -39,17 +39,28 @@
       ]
     },
     {
-      "tag": "return",
+      "tag": "return_request",
       "patterns": [
-        "i want to return a product", "need to make a return", "how do i return an item",
-        "it arrived damaged", "the product is defective", "it doesn't work", "it's broken",
-        "i want a refund", "i don't like it", "return please", "can i return this",
-        "wrong size", "wrong color", "not what i expected", "i changed my mind",
-        "i want to send it back", "return process", "how to return", "refund please"
+        "i want to return a product", "need to make a return", "how do i return", "return please",
+        "can i return this", "i want a refund", "refund please", "i want to send it back",
+        "i changed my mind", "not what i expected", "i don't like it"
       ],
       "responses": [
-        "I'm sorry about that. Could you tell me what happened with the product?",
-        "No problem. Did it arrive damaged or is it defective?"
+        "I'm sorry to hear that. Could you briefly tell me the reason for the return?",
+        "No problem. What's the issue with the product?"
+      ]
+    },
+    {
+      "tag": "return_reason_provided",
+      "patterns": [
+        "damaged", "defective", "broken", "doesn't work", "arrived damaged", "came broken",
+        "wrong size", "wrong color", "poor quality", "missing parts", "not working",
+        "dead on arrival", "scratched", "cracked", "doesn't fit"
+      ],
+      "responses": [
+        "Got it – the product arrived {0}. We'll start the return process right away. Could you please provide your order number?",
+        "Understood, it's {0}. Initiating return/refund. Just need your order number to continue.",
+        "Thanks for letting me know ({0}). Return approved. Please share the order number when ready."
       ]
     },
     {
@@ -71,8 +82,17 @@
         "where's my package", "when does it get here", "how many days left"
       ],
       "responses": [
-        "To check your order status, please provide the order number.",
-        "Sure! Just tell me the tracking or order number."
+        "Sure! To check the status, please provide your order number.",
+        "Just give me the order or tracking number and I'll look it up."
+      ]
+    },
+    {
+      "tag": "track_order_status",
+      "patterns": [],
+      "responses": [
+        "Order #{} → Shipped! Expected delivery in 2–3 business days.",
+        "Order #{} is out for delivery today. Tracking link sent to your email.",
+        "Order #{} is in transit (left warehouse yesterday). Estimated arrival: 2 days."
       ]
     },
     {
@@ -120,6 +140,50 @@
       ]
     },
     {
+      "tag": "product_cellphone",
+      "patterns": ["cellphone","phone","smartphone","iphone","samsung","mobile"],
+      "responses": [
+        "About the {}: Available colors → black, silver, blue, gold | Storage: 128/256 GB | Material: aluminum & glass | 108 MP camera | 5G ready. Anything else?",
+        "The {} comes in multiple colors and storage options. Battery lasts all day and has fast charging. Need more specs or want to see stock?"
+      ]
+    },
+
+    {
+      "tag": "product_laptop",
+      "patterns": ["laptop","macbook","notebook","computer","pc"],
+      "responses": [
+        "About the {}: 13–16 inch models | Intel i7 / Apple M2 | 16 GB RAM | 512 GB–1 TB SSD | Up to 18 hours battery. Available in silver & space gray. Anything else?",
+        "The {} has excellent performance and Retina display (on MacBook). Perfect for work or study. Want to know price or availability?"
+      ]
+    },
+
+    {
+      "tag": "product_clothing",
+      "patterns": ["shirt","t-shirt","pants","jeans","hoodie","jacket","dress"],
+      "responses": [
+        "About the {}: Available sizes S–XXL | Colors: black, white, navy, gray | 100 % cotton | Machine washable. Super comfortable! Need size chart or stock?",
+        "The {} comes in various colors and fits true to size. Very good reviews. Anything else I can help with?"
+      ]
+    },
+
+    {
+      "tag": "product_headphones",
+      "patterns": ["headphones","earbuds","airpods","earphones","wireless headphones"],
+      "responses": [
+        "About the {}: Active noise cancellation | 30-hour battery | Wireless charging case | Available in white & black. Sound quality is excellent. Anything else?",
+        "The {} have amazing bass and comfort. Perfect for calls and music. Want to check price?"
+      ]
+    },
+
+    {
+      "tag": "product_generic_fallback",
+      "patterns": [], 
+      "responses": [
+        "Thanks for asking about the {}! It's one of our popular items. Available in several colors/sizes. Let me know if you want more details or place an order.",
+        "Got it — the {} is in stock. Anything specific you'd like to know (price, colors, shipping… )?"
+      ]
+    },
+    {
       "tag": "size_exchange",
       "patterns": [
         "wrong size", "i need a different size", "can i exchange size", "change to L",
@@ -142,11 +206,23 @@
       ]
     },
     {
+      "tag": "confirm",
+      "patterns": [
+        "yes", "ok", "sure", "yes please", "no", "not really", "affirmative", "negative",
+        "yep", "nope", "alright"
+      ],
+      "responses": [
+        "Great! Proceeding with the request.",
+        "Okay, noted. Anything else I can help with?"
+      ]
+    },
+    {
       "tag": "not_understood",
       "patterns": [],
       "responses": [
         "I'm sorry, I didn't understand. Could you rephrase?",
-        "Hmm, not sure what you mean. Can you try saying it differently?"
+        "Hmm, not sure what you mean. Can you try saying it differently?",
+        "Let's try that again – what can I assist with?"
       ]
     }
   ]
