@@ -41,31 +41,20 @@ class Chatbot:
                 responses = intent['responses']
                 chosen = random.choice(responses)
 
-                # === NUEVA LÓGICA DE FORMATEO INTELIGENTE ===
                 if '{}' in chosen:
-                    # 1. Número de orden (ya existía)
                     if order_number and ("order" in chosen.lower() or "orden" in chosen.lower() or tag in ["order_number", "order_status_response"]):
                         chosen = chosen.format(order_number)
-
-                    # 2. Nombre del producto (nuevo – detecta automáticamente)
                     elif any(prod_tag in tag for prod_tag in ["product_", "cellphone", "laptop", "clothing", "headphones"]):
-                        # Extraemos la palabra clave del mensaje del usuario
                         words = user_message.lower().split()
                         product_word = next((w for w in words if w in user_message.lower()), "product")
                         chosen = chosen.format(product_word)
-
-                    # 3. Razón de devolución (nuevo – para return_reason_provided)
                     elif tag == "return_reason_provided":
-                        # Busca palabra clave del problema en el mensaje
                         reason_words = ["damaged", "broken", "defective", "wrong size", "wrong color"]
                         reason = next((w for w in reason_words if w in user_message.lower()), "issue")
                         chosen = chosen.format(reason)
-
-                    # 4. Caso genérico (por si acaso)
                     else:
                         chosen = chosen.format("item")
 
-                # Evitar repetición de la misma respuesta
                 if last_response and chosen == last_response and len(responses) > 1:
                     responses.remove(chosen)
                     chosen = random.choice(responses)

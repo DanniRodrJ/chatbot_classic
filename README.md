@@ -131,7 +131,7 @@ See **exactly** how your message flows through the neural network:
 
 | Metric                          | Value       | Notes                                      |
 |---------------------------------|-------------|----------------------------------------------------|
-| Raw Intent Accuracy             | **58.33%**   | Best epoch 60 • Early stopping • No synonym noise |
+| Raw Intent Accuracy             | **63.89%**   | Best epoch 43 • Early stopping • No synonym noise |
 | **Zero-Shot Real-World Accuracy**     | **54.84%**    | 93 completely unseen natural English phrases |
 | **Effective Conversational Accuracy** | **>95%** | Context tracking + slot filling + regex fallbacks |
 | Inference time                        | **< 5 ms**  | CPU only |
@@ -190,25 +190,25 @@ python evaluate_zero_shot.py
 # Edit data/documentacion.json
 python training_chatbot.py  # Overwrites models/
 ...
-Epoch 70/300
-18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 4ms/step - accuracy: 0.9504 - loss: 0.1970 - val_accuracy: 0.5278 - val_loss: 2.2109
-Epoch 71/300
-18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9574 - loss: 0.2625 - val_accuracy: 0.5556 - val_loss: 2.1811
-Epoch 72/300
-18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9220 - loss: 0.2781 - val_accuracy: 0.5556 - val_loss: 2.1882
-Epoch 73/300
-18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9433 - loss: 0.2357 - val_accuracy: 0.5556 - val_loss: 2.2329
-Epoch 74/300
-18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9220 - loss: 0.2763 - val_accuracy: 0.4722 - val_loss: 2.1935
-Epoch 75/300
-18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 4ms/step - accuracy: 0.9291 - loss: 0.2800 - val_accuracy: 0.5278 - val_loss: 2.2353
-Epoch 75: early stopping
-Restoring model weights from the end of the best epoch: 60.
+Epoch 53/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8865 - loss: 0.4472 - val_accuracy: 0.6111 - val_loss: 1.7064
+Epoch 54/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.8582 - loss: 0.4587 - val_accuracy: 0.6389 - val_loss: 1.7343
+Epoch 55/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9007 - loss: 0.4189 - val_accuracy: 0.6389 - val_loss: 1.7182
+Epoch 56/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step - accuracy: 0.9220 - loss: 0.3569 - val_accuracy: 0.6111 - val_loss: 1.6533
+Epoch 57/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9149 - loss: 0.3669 - val_accuracy: 0.6111 - val_loss: 1.6650
+Epoch 58/300
+18/18 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.9149 - loss: 0.3682 - val_accuracy: 0.6111 - val_loss: 1.6900
+Epoch 58: early stopping
+Restoring model weights from the end of the best epoch: 43.
 
-BEST RESULT (epoch 60):
-   → Test Accuracy : 0.5833 (58.33%)
-   → Test Loss     : 2.1446
-   → It stopped at epoch 75 (early stopping)
+BEST RESULT (epoch 43):
+   → Test Accuracy : 0.6389 (63.89%)
+   → Test Loss     : 1.6816
+   → It stopped at epoch 58 (early stopping)
 Model and metrics saved successfully.
 ```
 
